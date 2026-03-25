@@ -29,7 +29,7 @@ export async function GET(req: Request) {
     prisma.document.count({ where }),
   ]);
 
-  return NextResponse.json(apiSuccess(buildPaginatedResponse(docs, total, page, limit)));
+  return apiSuccess(buildPaginatedResponse(docs, total, page, limit));
 }
 
 export async function POST(req: Request) {

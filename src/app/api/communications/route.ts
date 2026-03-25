@@ -42,7 +42,7 @@ export async function GET(req: Request) {
     prisma.communication.count({ where }),
   ]);
 
-  return NextResponse.json(apiSuccess(buildPaginatedResponse(comms, total, page, limit)));
+  return apiSuccess(buildPaginatedResponse(comms, total, page, limit));
 }
 
 export async function POST(req: Request) {

@@ -55,7 +55,7 @@ export async function GET(req: Request) {
     prisma.contact.count({ where }),
   ]);
 
-  return NextResponse.json(apiSuccess(buildPaginatedResponse(contacts, total, page, limit)));
+  return apiSuccess(buildPaginatedResponse(contacts, total, page, limit));
 }
 
 export async function POST(req: Request) {

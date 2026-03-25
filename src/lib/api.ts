@@ -41,7 +41,7 @@ export function buildPagination(searchParams: URLSearchParams) {
 export function buildPaginatedResponse<T>(data: T[], total: number, page: number, limit: number) {
   return {
     data,
-    pagination: {
+    meta: {
       total,
       page,
       limit,

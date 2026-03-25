@@ -30,7 +30,7 @@ interface Organization {
 
 interface PaginatedResponse {
   data: Organization[];
-  pagination: { total: number; page: number; pages: number };
+  meta: { total: number; page: number; pages: number };
 }
 
 export function OrganizationsPage() {
@@ -58,7 +58,7 @@ export function OrganizationsPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Companies</h1>
-          <p className="text-sm text-muted-foreground">{data?.pagination.total ?? 0} organizations</p>
+          <p className="text-sm text-muted-foreground">{data?.meta.total ?? 0} organizations</p>
         </div>
         <Button size="sm" asChild>
           <Link href="/crm/organizations/new">
@@ -163,16 +163,16 @@ export function OrganizationsPage() {
         </div>
 
         {/* Pagination */}
-        {data && data.pagination.pages > 1 && (
+        {data && data.meta.pages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t">
             <p className="text-xs text-muted-foreground">
-              Page {data.pagination.page} of {data.pagination.pages}
+              Page {data.meta.page} of {data.meta.pages}
             </p>
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
                 Previous
               </Button>
-              <Button size="sm" variant="outline" disabled={page >= data.pagination.pages} onClick={() => setPage((p) => p + 1)}>
+              <Button size="sm" variant="outline" disabled={page >= data.meta.pages} onClick={() => setPage((p) => p + 1)}>
                 Next
               </Button>
             </div>

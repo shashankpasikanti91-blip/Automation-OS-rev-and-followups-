@@ -107,20 +107,20 @@ export function LeadsPage() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search leads…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8" />
         </div>
-        <Select value={status} onValueChange={setStatus}>
+        <Select value={status || 'all'} onValueChange={(v) => setStatus(v === 'all' ? '' : v)}>
           <SelectTrigger className="w-44">
             <Filter className="h-3.5 w-3.5 mr-1 opacity-60" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All statuses</SelectItem>
+            <SelectItem value="all">All statuses</SelectItem>
             <SelectItem value="NEW">New</SelectItem>
             <SelectItem value="CONTACTED">Contacted</SelectItem>
             <SelectItem value="QUALIFIED">Qualified</SelectItem>
-            <SelectItem value="PROPOSAL_SENT">Proposal Sent</SelectItem>
-            <SelectItem value="NEGOTIATING">Negotiating</SelectItem>
+            <SelectItem value="PROPOSAL">Proposal</SelectItem>
             <SelectItem value="WON">Won</SelectItem>
             <SelectItem value="LOST">Lost</SelectItem>
+            <SelectItem value="NURTURING">Nurturing</SelectItem>
           </SelectContent>
         </Select>
       </div>

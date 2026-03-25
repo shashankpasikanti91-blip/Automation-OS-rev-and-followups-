@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const ctx = await requireTenantContext();
     const { skip, limit, page } = buildPagination(req.nextUrl.searchParams);
     const status = req.nextUrl.searchParams.get('status');
-    const daysAhead = parseInt(req.nextUrl.searchParams.get('days') ?? '90', 10);
+    const daysAhead = parseInt(req.nextUrl.searchParams.get('daysAhead') ?? req.nextUrl.searchParams.get('days') ?? '90', 10);
 
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + daysAhead);

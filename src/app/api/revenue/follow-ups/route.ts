@@ -17,7 +17,13 @@ export async function GET(req: NextRequest) {
     if (priority) where.priority = priority;
     if (overdue) where.dueAt = { lt: new Date() };
 
-    const [followUps, total] = await Promise.all([
+    const now = new Date();
+    const today = new Date(now.toDateString());
+    const tomorrow = new Date(today.getTime() + 86400000);
+
+    const baseWhere = { tenantId: ctx.tenantId, isDeleted: false };
+
+    const [followUps, total, overdueCount, dueTodayCount, completedCount] = await Promise.all([
       prisma.followUp.findMany({
         where,
         skip,
@@ -31,9 +37,17 @@ export async function GET(req: NextRequest) {
         },
       }),
       prisma.followUp.count({ where }),
+      prisma.followUp.count({ where: { ...baseWhere, status: 'PENDING', dueAt: { lt: now } } }),
+      prisma.followUp.count({ where: { ...baseWhere, status: 'PENDING', dueAt: { gte: today, lt: tomorrow } } }),
+      prisma.followUp.count({ where: { ...baseWhere, status: 'COMPLETED' } }),
     ]);
 
-    return apiSuccess(buildPaginatedResponse(followUps, total, page, limit));
+    const result = buildPaginatedResponse(followUps, total, page, limit);
+    (result.meta as any).overdueCount = overdueCount;
+    (result.meta as any).dueTodayCount = dueTodayCount;
+    (result.meta as any).completedCount = completedCount;
+
+    return apiSuccess(result);
   } catch (err: any) {
     if (err.message === 'UNAUTHENTICATED') return apiError('Unauthorized', 401);
     return apiError('Failed to fetch follow-ups', 500);

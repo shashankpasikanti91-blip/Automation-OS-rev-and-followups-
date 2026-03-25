@@ -56,7 +56,7 @@ export async function GET(req: Request) {
     prisma.lead.count({ where }),
   ]);
 
-  return NextResponse.json(apiSuccess(buildPaginatedResponse(leads, total, page, limit)));
+  return apiSuccess(buildPaginatedResponse(leads, total, page, limit));
 }
 
 export async function POST(req: Request) {

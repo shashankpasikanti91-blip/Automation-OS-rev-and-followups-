@@ -9,20 +9,28 @@ export async function GET(req: NextRequest) {
     const { skip, limit, page } = buildPagination(req.nextUrl.searchParams);
     const search = req.nextUrl.searchParams.get('search') ?? '';
     const status = req.nextUrl.searchParams.get('status');
+    const minRisk = req.nextUrl.searchParams.get('minRisk');
+    const hasContract = req.nextUrl.searchParams.get('hasContract');
+    const sortBy = req.nextUrl.searchParams.get('sortBy');
+    const sortOrder = (req.nextUrl.searchParams.get('sortOrder') ?? 'desc') as 'asc' | 'desc';
 
     const where = {
       tenantId: ctx.tenantId,
       isDeleted: false,
       ...(search ? { name: { contains: search, mode: 'insensitive' as const } } : {}),
       ...(status ? { renewalStatus: status as any } : {}),
+      ...(minRisk ? { riskScore: { gte: parseInt(minRisk, 10) } } : {}),
+      ...(hasContract === 'true' ? { contractValue: { not: null, gt: 0 } } : {}),
     };
+
+    const orderBy = sortBy === 'riskScore' ? { riskScore: sortOrder } : { updatedAt: 'desc' as const };
 
     const [organizations, total] = await Promise.all([
       prisma.organization.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { updatedAt: 'desc' },
+        orderBy,
         include: { _count: { select: { contacts: true, leads: true } } },
       }),
       prisma.organization.count({ where }),

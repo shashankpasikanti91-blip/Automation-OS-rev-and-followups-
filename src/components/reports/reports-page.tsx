@@ -28,7 +28,7 @@ interface ReportData {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  PENDING: 'bg-amber-500', IN_PROGRESS: 'bg-blue-500', COMPLETED: 'bg-emerald-500', CANCELLED: 'bg-red-500', SKIPPED: 'bg-gray-500',
+  PENDING: 'bg-amber-500', MISSED: 'bg-red-500', COMPLETED: 'bg-emerald-500', CANCELLED: 'bg-gray-500', SNOOZED: 'bg-blue-500',
 };
 
 export function ReportsPage() {

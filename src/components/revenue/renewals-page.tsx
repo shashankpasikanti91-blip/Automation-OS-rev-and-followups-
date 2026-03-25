@@ -113,15 +113,15 @@ export function RenewalsPage() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search renewals…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8" />
         </div>
-        <Select value={status} onValueChange={setStatus}>
+        <Select value={status || 'all'} onValueChange={(v) => setStatus(v === 'all' ? '' : v)}>
           <SelectTrigger className="w-44">
             <Filter className="h-3.5 w-3.5 mr-1 opacity-60" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="UPCOMING">Upcoming</SelectItem>
-            <SelectItem value="DUE_SOON">Due Soon</SelectItem>
+            <SelectItem value="DUE">Due</SelectItem>
             <SelectItem value="OVERDUE">Overdue</SelectItem>
             <SelectItem value="RENEWED">Renewed</SelectItem>
             <SelectItem value="CANCELLED">Cancelled</SelectItem>

@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { TrendingUp, Clock, RefreshCw, AlertCircle, Zap, CheckCircle2, ArrowRight } from 'lucide-react';
+import { TrendingUp, Clock, RefreshCw, AlertCircle, Zap, CheckCircle2 } from 'lucide-react';
 import { StatCard } from '@/components/ui/stat-card';
 import { Button } from '@/components/ui/button';
 import { RevenueChart } from '@/components/dashboard/revenue-chart';

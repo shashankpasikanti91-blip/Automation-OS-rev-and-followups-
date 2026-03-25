@@ -106,17 +106,17 @@ export function CommunicationsPage() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-8" />
         </div>
-        <Select value={channel} onValueChange={setChannel}>
+        <Select value={channel || 'all'} onValueChange={(v) => setChannel(v === 'all' ? '' : v)}>
           <SelectTrigger className="w-40">
             <Filter className="h-3.5 w-3.5 mr-1 opacity-60" />
             <SelectValue placeholder="Channel" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All channels</SelectItem>
+            <SelectItem value="all">All channels</SelectItem>
             <SelectItem value="EMAIL">Email</SelectItem>
             <SelectItem value="SMS">SMS</SelectItem>
             <SelectItem value="WHATSAPP">WhatsApp</SelectItem>
-            <SelectItem value="CALL">Call</SelectItem>
+            <SelectItem value="PHONE">Call</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -206,7 +206,7 @@ export function CommunicationsPage() {
                   <SelectItem value="EMAIL">Email</SelectItem>
                   <SelectItem value="SMS">SMS</SelectItem>
                   <SelectItem value="WHATSAPP">WhatsApp</SelectItem>
-                  <SelectItem value="CALL">Call Note</SelectItem>
+                  <SelectItem value="PHONE">Call Note</SelectItem>
                 </SelectContent>
               </Select>
             </div>
