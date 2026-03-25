@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { requireTenantContext } from '@/lib/tenant';
 import { apiSuccess, apiError, buildPagination, buildPaginatedResponse } from '@/lib/api';
+import { fireWebhook } from '@/lib/webhook';
 import { z } from 'zod';
 
 const createSchema = z.object({
@@ -81,6 +82,9 @@ export async function POST(req: Request) {
       leadId: lead.id,
     },
   });
+
+  // Fire webhook asynchronously — don't block the response
+  fireWebhook(ctx.tenantId, 'lead.created', { lead }).catch(() => {});
 
   return NextResponse.json(apiSuccess(lead), { status: 201 });
 }

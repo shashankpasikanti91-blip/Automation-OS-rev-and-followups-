@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { requireTenantContext } from '@/lib/tenant';
 import { apiSuccess, apiError } from '@/lib/api';
+import { fireWebhook } from '@/lib/webhook';
 import { z } from 'zod';
 
 const patchSchema = z.object({
@@ -54,6 +55,11 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       contactId: updated.contactId ?? undefined,
     },
   });
+
+  // Fire webhook for completed follow-ups
+  if (parsed.data.status === 'COMPLETED') {
+    fireWebhook(ctx.tenantId, 'followup.completed', { followUp: updated }).catch(() => {});
+  }
 
   return NextResponse.json(apiSuccess(updated));
 }

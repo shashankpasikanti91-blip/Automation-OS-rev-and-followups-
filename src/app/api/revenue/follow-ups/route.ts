@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireTenantContext } from '@/lib/tenant';
 import { apiSuccess, apiError, buildPagination, buildPaginatedResponse } from '@/lib/api';
+import { fireWebhook } from '@/lib/webhook';
 
 // GET /api/revenue/follow-ups
 export async function GET(req: NextRequest) {
@@ -74,6 +75,8 @@ export async function POST(req: NextRequest) {
         userId: ctx.userId,
       },
     });
+
+    fireWebhook(ctx.tenantId, 'followup.created', { followUp }).catch(() => {});
 
     return apiSuccess(followUp, 201);
   } catch (err: any) {

@@ -32,7 +32,7 @@ const navigation: NavItem[] = [
       { label: 'Contacts', href: '/crm/contacts' },
       { label: 'Companies', href: '/crm/organizations' },
       { label: 'Pipelines', href: '/crm/pipelines', soon: true },
-      { label: 'Activities', href: '/crm/activities', soon: true },
+      { label: 'Activities', href: '/crm/activities' },
     ],
   },
   {
@@ -43,7 +43,7 @@ const navigation: NavItem[] = [
       { label: 'Follow-Ups', href: '/revenue/follow-ups' },
       { label: 'At Risk', href: '/revenue/at-risk' },
       { label: 'Contracts', href: '/revenue/contracts' },
-      { label: 'Smart Actions', href: '/revenue/actions', soon: true },
+      { label: 'Smart Actions', href: '/revenue/actions' },
     ],
   },
   {
@@ -59,10 +59,10 @@ const navigation: NavItem[] = [
     label: 'Communications', icon: MessageSquare,
     children: [
       { label: 'Outreach', href: '/communications' },
-      { label: 'Templates', href: '/communications/templates', soon: true },
+      { label: 'Templates', href: '/communications/templates' },
       { label: 'Campaigns', href: '/communications/campaigns', soon: true },
-      { label: 'AI Composer', href: '/communications/composer', soon: true },
-      { label: 'Logs', href: '/communications/logs', soon: true },
+      { label: 'AI Composer', href: '/communications/composer' },
+      { label: 'Logs', href: '/communications/logs' },
     ],
   },
   {
@@ -72,7 +72,7 @@ const navigation: NavItem[] = [
       { label: 'Triggers', href: '/workflows/triggers', soon: true },
       { label: 'Schedules', href: '/workflows/schedules', soon: true },
       { label: 'Integrations', href: '/workflows/integrations', soon: true },
-      { label: 'Logs', href: '/workflows/logs', soon: true },
+      { label: 'Logs', href: '/workflows/logs' },
     ],
   },
   {

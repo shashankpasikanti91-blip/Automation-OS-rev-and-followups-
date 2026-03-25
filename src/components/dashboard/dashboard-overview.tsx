@@ -10,6 +10,7 @@ import { RevenueChart } from '@/components/dashboard/revenue-chart';
 import { ActivityFeed } from '@/components/dashboard/activity-feed';
 import { UpcomingRenewals } from '@/components/dashboard/upcoming-renewals';
 import { AtRiskWidget } from '@/components/dashboard/at-risk-widget';
+import { SetupChecklist } from '@/components/dashboard/setup-checklist';
 
 interface DashboardData {
   kpis: {
@@ -123,6 +124,9 @@ export function DashboardOverview() {
           loading={loading}
         />
       </div>
+
+      {/* Setup checklist — auto-hides when all steps are done */}
+      <SetupChecklist />
 
       {/* Main content grid */}
       <div className="grid gap-6 lg:grid-cols-3">

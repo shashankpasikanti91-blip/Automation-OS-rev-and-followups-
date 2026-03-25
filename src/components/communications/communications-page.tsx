@@ -1,15 +1,16 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { MessageSquare, Mail, Phone, MessageCircle, Plus, Search, Filter, AlertCircle, Loader2, Send } from 'lucide-react';
+import { MessageSquare, Mail, Phone, MessageCircle, Plus, Search, Filter, Loader2, Send, FileEdit, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
@@ -30,10 +31,11 @@ const CHANNEL_ICONS: Record<string, React.ReactNode> = {
   SMS: <MessageCircle className="h-3.5 w-3.5" />,
   WHATSAPP: <MessageSquare className="h-3.5 w-3.5" />,
   CALL: <Phone className="h-3.5 w-3.5" />,
+  PHONE: <Phone className="h-3.5 w-3.5" />,
 };
 
 const STATUS_VARIANTS: Record<string, string> = {
-  DRAFT: 'ghost', SENT: 'info', DELIVERED: 'info', OPENED: 'success',
+  DRAFT: 'ghost', QUEUED: 'warning', SENT: 'info', DELIVERED: 'info', OPENED: 'success',
   REPLIED: 'success', FAILED: 'danger', BOUNCED: 'danger',
 };
 
@@ -46,6 +48,7 @@ export function CommunicationsPage() {
   const [channel, setChannel] = useState('');
   const [composeOpen, setComposeOpen] = useState(false);
   const [composing, setComposing] = useState(false);
+  const [sending, setSending] = useState<string | null>(null);
   const [form, setForm] = useState({ channel: 'EMAIL', subject: '', body: '' });
 
   const load = useCallback(async () => {
@@ -62,24 +65,42 @@ export function CommunicationsPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  const send = async () => {
+  const saveDraft = async () => {
     setComposing(true);
     const res = await fetch('/api/communications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, status: 'SENT', direction: 'OUTBOUND' }),
+      body: JSON.stringify({ ...form, direction: 'OUTBOUND' }),
     });
     const json = await res.json();
 
     if (!res.ok) {
-      toast({ title: 'Failed', description: json.error, variant: 'destructive' });
+      toast({ title: 'Failed to save draft', description: json.error, variant: 'destructive' });
     } else {
-      toast({ title: 'Communication saved', variant: 'success' });
+      toast({ title: 'Draft saved', description: 'Your message has been saved as a draft. You can send it when your integration is connected.', variant: 'success' });
       setComposeOpen(false);
       setForm({ channel: 'EMAIL', subject: '', body: '' });
       load();
     }
     setComposing(false);
+  };
+
+  const requestSend = async (commId: string) => {
+    setSending(commId);
+    const res = await fetch('/api/communications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: commId, action: 'send' }),
+    });
+    const json = await res.json();
+
+    if (!res.ok) {
+      toast({ title: 'Cannot send', description: json.error, variant: 'destructive' });
+    } else {
+      toast({ title: 'Queued for sending', description: 'Message has been queued. It will be sent via your connected integration.', variant: 'success' });
+      load();
+    }
+    setSending(null);
   };
 
   const filtered = search ? items.filter((c) => (c.subject ?? c.body ?? '').toLowerCase().includes(search.toLowerCase())) : items;
@@ -132,22 +153,28 @@ export function CommunicationsPage() {
                 <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Recipient</th>
                 <th className="text-left px-4 py-3 font-medium">Status</th>
                 <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Date</th>
+                <th className="text-right px-4 py-3 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 [...Array(6)].map((_, i) => (
                   <tr key={i} className="border-b">
-                    {[...Array(5)].map((_, j) => (
+                    {[...Array(6)].map((_, j) => (
                       <td key={j} className="px-4 py-3"><div className="skeleton-pulse h-4 rounded" /></td>
                     ))}
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <AlertCircle className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">No communications found</p>
+                  <td colSpan={6} className="py-0">
+                    <EmptyState
+                      icon={MessageSquare}
+                      title="No communications yet"
+                      description="Create your first draft or connect an email integration to start outreach."
+                      actionLabel="Compose Message"
+                      onAction={() => setComposeOpen(true)}
+                    />
                   </td>
                 </tr>
               ) : filtered.map((c) => (
@@ -160,16 +187,40 @@ export function CommunicationsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <p className="text-sm font-medium truncate max-w-[240px]">{c.subject ?? c.body ?? '—'}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{c.direction.toLowerCase()}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{c.direction?.toLowerCase()}</p>
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell text-sm">
                     {c.organization?.name ?? (c.contact ? `${c.contact.firstName} ${c.contact.lastName}` : '—')}
                   </td>
                   <td className="px-4 py-3">
-                    <Badge variant={STATUS_VARIANTS[c.status] as 'ghost' | 'success' | 'danger' | 'info' | undefined}>{c.status}</Badge>
+                    <Badge variant={STATUS_VARIANTS[c.status] as 'ghost' | 'success' | 'danger' | 'info' | 'warning' | undefined}>{c.status}</Badge>
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell text-sm text-muted-foreground">
                     {format(new Date(c.createdAt), 'MMM d, HH:mm')}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    {c.status === 'DRAFT' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1 text-xs"
+                        disabled={sending === c.id}
+                        onClick={() => requestSend(c.id)}
+                      >
+                        {sending === c.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                        Send
+                      </Button>
+                    )}
+                    {c.status === 'QUEUED' && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
+                        <Loader2 className="h-3 w-3 animate-spin" /> Queued
+                      </span>
+                    )}
+                    {c.status === 'FAILED' && (
+                      <span className="text-xs text-destructive flex items-center gap-1 justify-end">
+                        <AlertTriangle className="h-3 w-3" /> Failed
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -192,8 +243,11 @@ export function CommunicationsPage() {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Send className="h-4 w-4" /> New Communication
+              <FileEdit className="h-4 w-4" /> Compose Message
             </DialogTitle>
+            <DialogDescription>
+              Messages are saved as drafts first. Connect an integration in Settings to enable sending.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-1.5">
@@ -210,7 +264,7 @@ export function CommunicationsPage() {
                 </SelectContent>
               </Select>
             </div>
-            {form.channel === 'EMAIL' && (
+            {(form.channel === 'EMAIL') && (
               <div className="space-y-1.5">
                 <Label>Subject</Label>
                 <Input placeholder="Subject" value={form.subject} onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))} />
@@ -228,9 +282,9 @@ export function CommunicationsPage() {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setComposeOpen(false)}>Cancel</Button>
-            <Button onClick={send} disabled={composing || !form.body} className="gap-2">
-              {composing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              Save
+            <Button onClick={saveDraft} disabled={composing || !form.body.trim()} className="gap-2">
+              {composing ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileEdit className="h-4 w-4" />}
+              Save Draft
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -4,8 +4,65 @@
 
 Built with Next.js 14, TypeScript, Tailwind CSS, Prisma, PostgreSQL 16, Redis 7, OpenAI & Anthropic AI.
 
-> **Live**: [https://automation.yourdomain.com](https://automation.yourdomain.com) (deploy target: 5.223.67.236)  
+> **Live**: [https://automation.srpailabs.com](https://automation.srpailabs.com)  
 > **GitHub**: [https://github.com/shashankpasikanti91-blip/Automation-OS-rev-and-followups-](https://github.com/shashankpasikanti91-blip/Automation-OS-rev-and-followups-)
+
+---
+
+## MVP Changes (branch: `mvp/working-backend`)
+
+This branch transforms the prototype into a working MVP with real DB queries, proper UX flows, and no fake data.
+
+### What Changed
+
+**Communications — Draft-First Flow**
+- Messages are always created as DRAFT (no more fake "SENT" status)
+- Explicit "Send" action that checks integration status before queuing
+- Fires webhooks via `fireWebhook()` for n8n/Zapier automation
+
+**New Functional Pages (previously 404 stubs)**
+- CRM Activities — timeline of all user actions
+- Revenue Smart Actions — data-driven actions computed from real DB queries
+- Communication Templates — full CRUD for message templates
+- AI Composer — generate messages with OpenAI/Anthropic
+- Communication Logs — webhook delivery log viewer
+- Workflow Logs — execution history for automated workflows
+
+**Coming Soon Pages (previously 404)**
+- CRM Pipelines, Communication Campaigns, Workflow Triggers/Schedules/Integrations
+- Reports (Revenue Pulse, Pipeline Insights, Team Metrics, Exports)
+- Documents (Extraction Queue, Structured Data, Templates)
+
+**Leads — New Lead Dialog**
+- "New Lead" button now opens a creation form (title, description, source, status, value, currency, expected close date)
+
+**Settings — Integrations & Webhooks Tabs**
+- General settings (workspace name, locale, currency, timezone)
+- Integrations tab (enable/disable SMTP, WhatsApp, OpenAI, n8n)
+- Webhooks tab (create/delete webhooks with event subscriptions and HMAC signing)
+
+**Dashboard — Setup Checklist**
+- Auto-shown progress widget that guides new users through first-time setup
+- Auto-hides when all steps are complete
+
+**Sidebar Navigation**
+- Removed "SOON" badges from pages that now have real content
+
+**Webhook Architecture**
+- New service: `src/lib/webhook.ts` — fires HMAC-signed webhooks to n8n/Zapier
+- Wired into Leads create, Follow-Up create/complete, Communications send
+- Full delivery logging with response status codes
+
+**New API Routes**
+- `GET /api/communications/logs` — webhook delivery logs
+- `GET /api/workflows/logs` — workflow execution history  
+- `GET/POST /api/settings/integrations` — integration management
+- `GET/POST/PATCH/DELETE /api/settings/webhooks` — webhook CRUD
+- `GET /api/dashboard/setup` — setup checklist status
+- `GET /api/crm/activities` — activity timeline
+- `GET /api/revenue/smart-actions` — computed smart actions
+- `GET/POST/PATCH/DELETE /api/communications/templates` — template CRUD
+- `POST /api/ai/compose` — AI message generation
 
 ---
 
@@ -187,6 +244,12 @@ REDIS_URL="redis://localhost:6379"
 # File Storage
 UPLOAD_DIR="./uploads"
 MAX_UPLOAD_SIZE_MB="10"
+
+# Webhooks & Integrations (optional)
+N8N_WEBHOOK_URL=""                # n8n webhook endpoint
+TWILIO_ACCOUNT_SID=""             # Twilio account SID (for WhatsApp)
+TWILIO_AUTH_TOKEN=""              # Twilio auth token
+TWILIO_WHATSAPP_NUMBER=""         # Twilio WhatsApp sender number
 ```
 
 ---
