@@ -10,23 +10,29 @@ import {
   ChevronDown, ChevronRight, Menu, X, Zap,
 } from 'lucide-react';
 
+interface NavChild {
+  label: string;
+  href: string;
+  soon?: boolean;
+}
+
 interface NavItem {
   label: string;
   href?: string;
   icon: React.ElementType;
-  children?: { label: string; href: string }[];
+  children?: NavChild[];
 }
 
 const navigation: NavItem[] = [
-  { label: 'Command Center', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   {
     label: 'CRM Hub', icon: Users,
     children: [
       { label: 'Leads', href: '/crm/leads' },
       { label: 'Contacts', href: '/crm/contacts' },
       { label: 'Companies', href: '/crm/organizations' },
-      { label: 'Pipelines', href: '/crm/pipelines' },
-      { label: 'Activities', href: '/crm/activities' },
+      { label: 'Pipelines', href: '/crm/pipelines', soon: true },
+      { label: 'Activities', href: '/crm/activities', soon: true },
     ],
   },
   {
@@ -37,46 +43,46 @@ const navigation: NavItem[] = [
       { label: 'Follow-Ups', href: '/revenue/follow-ups' },
       { label: 'At Risk', href: '/revenue/at-risk' },
       { label: 'Contracts', href: '/revenue/contracts' },
-      { label: 'Smart Actions', href: '/revenue/actions' },
+      { label: 'Smart Actions', href: '/revenue/actions', soon: true },
     ],
   },
   {
     label: 'Documents AI', icon: FileText,
     children: [
       { label: 'Uploads', href: '/documents' },
-      { label: 'Extraction Queue', href: '/documents/queue' },
-      { label: 'Structured Data', href: '/documents/data' },
-      { label: 'Templates', href: '/documents/templates' },
+      { label: 'Extraction Queue', href: '/documents/queue', soon: true },
+      { label: 'Structured Data', href: '/documents/data', soon: true },
+      { label: 'Templates', href: '/documents/templates', soon: true },
     ],
   },
   {
     label: 'Communications', icon: MessageSquare,
     children: [
       { label: 'Outreach', href: '/communications' },
-      { label: 'Templates', href: '/communications/templates' },
-      { label: 'Campaigns', href: '/communications/campaigns' },
-      { label: 'AI Composer', href: '/communications/composer' },
-      { label: 'Logs', href: '/communications/logs' },
+      { label: 'Templates', href: '/communications/templates', soon: true },
+      { label: 'Campaigns', href: '/communications/campaigns', soon: true },
+      { label: 'AI Composer', href: '/communications/composer', soon: true },
+      { label: 'Logs', href: '/communications/logs', soon: true },
     ],
   },
   {
     label: 'Workflows', icon: GitBranch,
     children: [
       { label: 'Workflow Studio', href: '/workflows' },
-      { label: 'Triggers', href: '/workflows/triggers' },
-      { label: 'Schedules', href: '/workflows/schedules' },
-      { label: 'Integrations', href: '/workflows/integrations' },
-      { label: 'Logs', href: '/workflows/logs' },
+      { label: 'Triggers', href: '/workflows/triggers', soon: true },
+      { label: 'Schedules', href: '/workflows/schedules', soon: true },
+      { label: 'Integrations', href: '/workflows/integrations', soon: true },
+      { label: 'Logs', href: '/workflows/logs', soon: true },
     ],
   },
   {
     label: 'Reports', icon: BarChart2,
     children: [
       { label: 'Performance Hub', href: '/reports' },
-      { label: 'Revenue Pulse', href: '/reports/revenue' },
-      { label: 'Pipeline Insights', href: '/reports/pipeline' },
-      { label: 'Team Metrics', href: '/reports/team' },
-      { label: 'Exports', href: '/reports/exports' },
+      { label: 'Revenue Pulse', href: '/reports/revenue', soon: true },
+      { label: 'Pipeline Insights', href: '/reports/pipeline', soon: true },
+      { label: 'Team Metrics', href: '/reports/team', soon: true },
+      { label: 'Exports', href: '/reports/exports', soon: true },
     ],
   },
   {
@@ -86,7 +92,6 @@ const navigation: NavItem[] = [
       { label: 'MediFlow', href: '/packs/medi' },
       { label: 'InsureFlow', href: '/packs/insure' },
       { label: 'FinanceFlow', href: '/packs/finance' },
-      { label: 'ServiceFlow', href: '/packs/service' },
       { label: 'AgencyFlow', href: '/packs/agency' },
     ],
   },
@@ -114,8 +119,8 @@ export function AppSidebar() {
           <Zap className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
-          <span className="text-sm font-bold text-sidebar-foreground">SRP AI OS</span>
-          <p className="text-2xs text-sidebar-foreground/40">Revenue Platform</p>
+          <span className="text-sm font-bold text-sidebar-foreground">Revenue OS</span>
+          <p className="text-2xs text-sidebar-foreground/40">by SRP AI Labs</p>
         </div>
       </div>
 
@@ -160,13 +165,18 @@ export function AppSidebar() {
                       key={child.href}
                       href={child.href}
                       className={cn(
-                        'block rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+                        'flex items-center justify-between rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
                         'text-sidebar-foreground/60 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent',
                         pathname === child.href && 'text-sidebar-accent-foreground bg-sidebar-accent',
                       )}
                       onClick={() => setMobileOpen(false)}
                     >
-                      {child.label}
+                      <span>{child.label}</span>
+                      {child.soon && (
+                        <span className="ml-2 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold text-amber-500 leading-none">
+                          SOON
+                        </span>
+                      )}
                     </Link>
                   ))}
                 </div>
@@ -178,7 +188,7 @@ export function AppSidebar() {
 
       {/* Footer */}
       <div className="border-t border-sidebar-border p-3">
-        <p className="text-2xs text-sidebar-foreground/30 text-center">SRP AI OS v1.0</p>
+        <p className="text-2xs text-sidebar-foreground/30 text-center">Revenue OS v1.0 · SRP AI Labs</p>
       </div>
     </div>
   );

@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "=== Check admin user in DB ==="
+docker exec revenue-followups-db psql -U srpaios -d srpaios -c "SELECT id, email, role, \"tenantId\" FROM \"User\" WHERE email='admin@srpaios.demo';"
+echo ""
+echo "=== Check tenants ==="
+docker exec revenue-followups-db psql -U srpaios -d srpaios -c "SELECT id, name, slug FROM \"Tenant\" LIMIT 5;"
+echo ""
+echo "=== Check total users ==="
+docker exec revenue-followups-db psql -U srpaios -d srpaios -c "SELECT COUNT(*) FROM \"User\";"
+echo ""
+echo "=== All users ==="
+docker exec revenue-followups-db psql -U srpaios -d srpaios -c "SELECT email, role FROM \"User\";"

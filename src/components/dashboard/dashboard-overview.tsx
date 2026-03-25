@@ -46,8 +46,8 @@ export function DashboardOverview() {
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1 className="page-title">Command Center</h1>
-          <p className="text-sm text-muted-foreground">Your revenue & operations at a glance</p>
+          <h1 className="page-title">Revenue Engine Dashboard</h1>
+          <p className="text-sm text-muted-foreground">AI-powered system to manage follow-ups, track revenue, and identify at-risk clients</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="section-label">Today</span>
