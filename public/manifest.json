@@ -1,0 +1,9 @@
+{
+  "name": "SRP AI OS",
+  "short_name": "SRP AI",
+  "icons": [],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0F172A",
+  "background_color": "#0F172A"
+}
