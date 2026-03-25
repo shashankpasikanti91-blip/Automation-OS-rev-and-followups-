@@ -1,0 +1,37 @@
+SERVICE AGREEMENT CONTRACT
+
+Contract Number: SA-2025-0042
+Effective Date: March 1, 2025
+
+PARTIES:
+1. SRP AI OS Demo Corp ("Provider")
+   - 1 Marina Blvd, Level 28, Singapore 018989
+2. Global Industries Ltd ("Client")
+   - 456 Industrial Ave, New York, NY 10001, USA
+
+SCOPE OF SERVICES:
+The Provider agrees to deliver the following services:
+- Enterprise SaaS platform access (unlimited users)
+- 24/7 technical support
+- Monthly performance reviews
+- Quarterly strategy sessions
+- Custom workflow automation setup
+
+CONTRACT TERM:
+- Start Date: June 1, 2024
+- End Date: May 31, 2025
+- Auto-renewal: Yes (30-day cancellation notice required)
+
+PRICING:
+- Annual License Fee: $48,000.00
+- Paid quarterly: $12,000.00 per quarter
+- Late payment fee: 1.5% per month
+
+TERMINATION:
+Either party may terminate with 30 days written notice.
+Early termination fee: Remaining contract value at 50%.
+
+SIGNATURES:
+_______________________     _______________________
+Provider Representative      Client Representative
+Date: _______________       Date: _______________

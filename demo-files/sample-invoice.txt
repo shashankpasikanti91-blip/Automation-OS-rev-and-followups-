@@ -1,0 +1,29 @@
+INVOICE
+
+Invoice #: INV-2025-001
+Date: January 15, 2025
+
+BILL TO:
+Acme Corp
+123 Technology Drive
+Singapore 238801
+
+FROM:
+SRP AI OS Demo Corp
+1 Marina Blvd, Level 28
+Singapore 018989
+
+ITEMS:
+1. Enterprise SaaS License (Annual) - $24,000.00
+2. Implementation & Setup Fee       - $5,000.00
+3. Training (20 hours)              - $3,000.00
+
+SUBTOTAL: $32,000.00
+GST (8%):  $2,560.00
+TOTAL:    $34,560.00
+
+Payment Terms: Net 30
+Bank: DBS Bank Singapore
+Account: 001-234567-8
+
+Thank you for your business!
