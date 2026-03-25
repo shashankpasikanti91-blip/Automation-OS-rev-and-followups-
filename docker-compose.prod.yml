@@ -4,14 +4,12 @@ version: '3.9'
 services:
   srp-postgres:
     image: postgres:16-alpine
-    container_name: srp-ai-os-db
+    container_name: revenue-followups-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-srpaios}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-srpaios_secret_2026}
       POSTGRES_DB: ${POSTGRES_DB:-srpaios}
-    ports:
-      - '5442:5432'
     volumes:
       - srp_postgres_data:/var/lib/postgresql/data
       - ./docker/init-db:/docker-entrypoint-initdb.d
@@ -25,10 +23,8 @@ services:
 
   srp-redis:
     image: redis:7-alpine
-    container_name: srp-ai-os-redis
+    container_name: revenue-followups-redis
     restart: unless-stopped
-    ports:
-      - '6389:6379'
     volumes:
       - srp_redis_data:/data
     healthcheck:
@@ -43,7 +39,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: srp-ai-os-app
+    container_name: revenue-followups-app
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-srpaios}:${POSTGRES_PASSWORD:-srpaios_secret_2026}@srp-postgres:5432/${POSTGRES_DB:-srpaios}
@@ -57,7 +53,7 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
     ports:
-      - '3100:3000'
+      - '127.0.0.1:3100:3000'
     depends_on:
       srp-postgres:
         condition: service_healthy
@@ -65,7 +61,7 @@ services:
         condition: service_healthy
     volumes:
       - ./uploads:/app/uploads
-    command: sh -c "npx prisma migrate deploy && npm start"
+    command: sh -c "npx prisma db push --accept-data-loss 2>/dev/null; node server.js"
     networks:
       - srp-network
 
