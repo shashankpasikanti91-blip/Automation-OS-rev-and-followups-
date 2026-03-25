@@ -36,7 +36,6 @@ export async function POST(req: NextRequest) {
     const template = await prisma.communicationTemplate.create({
       data: {
         tenantId: ctx.tenantId,
-        createdBy: ctx.userId,
         name: parsed.data.name,
         channel: parsed.data.channel,
         subject: parsed.data.subject,
