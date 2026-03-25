@@ -71,7 +71,6 @@ export async function POST(req: Request) {
       organizationId: organizationId ?? undefined,
       contactId: contactId ?? undefined,
       leadId: leadId ?? undefined,
-      createdBy: ctx.userId,
     },
   });
 
